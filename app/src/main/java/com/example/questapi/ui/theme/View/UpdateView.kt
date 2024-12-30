@@ -4,22 +4,78 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.questapi.Navigation.DestinasiNavigasi
+import com.example.questapi.ui.theme.TopBar.CostumeTopAppBar
+import com.example.questapi.ui.theme.ViewModel.PenyediaViewModel
 import com.example.questapi.ui.theme.ViewModel.UpdateUiEvent
 import com.example.questapi.ui.theme.ViewModel.UpdateUiState
+import com.example.questapi.ui.theme.ViewModel.UpdateViewModel
+import kotlinx.coroutines.launch
 
 object DestinasiUpdate : DestinasiNavigasi {
     override val route = "item_update"
     override val titleRes = "Update Mahasiswa"
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun UpdateEntryScreen(
+    nim: String,
+    navigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: UpdateViewModel = viewModel(factory = PenyediaViewModel.Factory)
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    LaunchedEffect(nim) {
+        viewModel.loadMahasiswa(nim)
+    }
+
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            CostumeTopAppBar(
+                title = "Update Mahasiswa",
+                canNavigateBack = true,
+                scrollBehavior = scrollBehavior,
+                navigateUp = navigateBack
+            )
+        }
+    ) { innerPadding ->
+        UpdateBody(
+            updateUiState = viewModel.uiState,
+            onSiswaValueChange = viewModel::updateMahasiswaState,
+            onUpdateClick = {
+                coroutineScope.launch {
+                    viewModel.updateMahasiswa(nim)
+                    navigateBack()
+                }
+            },
+            modifier = Modifier
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .fillMaxWidth()
+        )
+    }
 }
 
 @Composable
