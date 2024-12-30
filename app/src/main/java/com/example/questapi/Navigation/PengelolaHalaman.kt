@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.questapi.ui.theme.View.DestinasiDetail
 import com.example.questapi.ui.theme.View.DestinasiEntry
 import com.example.questapi.ui.theme.View.DestinasiHome
 import com.example.questapi.ui.theme.View.EntryMhsScreen
@@ -23,8 +24,9 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 navigateToItemEntry = {
                     navController.navigate(DestinasiEntry.route)
                 },
-                onDetailClick = {
-
+                onDetailClick = {nim ->
+                    if (nim.isNotEmpty()) {
+                        navController.navigate("${DestinasiDetail.route}/$nim")
                     }
                 }
             )
