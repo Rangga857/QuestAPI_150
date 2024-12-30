@@ -13,8 +13,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.questapi.Navigation.DestinasiNavigasi
 import com.example.questapi.ui.theme.ViewModel.UpdateUiEvent
 import com.example.questapi.ui.theme.ViewModel.UpdateUiState
+
+object DestinasiUpdate : DestinasiNavigasi {
+    override val route = "item_update"
+    override val titleRes = "Update Mahasiswa"
+}
 
 @Composable
 fun UpdateBody(
